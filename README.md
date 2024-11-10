@@ -4,13 +4,42 @@ This project is a University Management System designed to streamline and simpli
 
 ## Features
 
-- User authentication with secure password hashing using bcrypt
-- Structured data validation using Zod
-- Database integration with MongoDB via Mongoose
-- Environment variable management with dotenv
-- CORS configuration for secure cross-origin requests
-- Customizable linting and formatting using ESLint and Prettier
-- TypeScript support for robust type-checking
+### **Authentication**
+- **Student:**
+  - Secure login and logout functionality.
+  - Ability to update their password.
+- **Faculty:**
+  - Secure login and logout functionality.
+  - Ability to update their password.
+- **Admin:**
+  - Secure login and logout functionality.
+  - Ability to update their password.
+
+### **Profile Management**
+- **Student:**
+  - Manage and update profile details, including certain specific fields.
+- **Faculty:**
+  - Manage and update profile details, including certain specific fields.
+- **Admin:**
+  - Manage and update profile details, including certain specific fields.
+
+### **Academic Process**
+- **Student:**
+  - Enroll in offered courses for a specific semester.
+  - View class schedules and grades.
+  - Access notice boards and event updates.
+- **Faculty:**
+  - Manage student grades.
+  - Access student personal and academic information.
+- **Admin:**
+  - Manage semesters, courses, offered courses, sections, rooms, and buildings.
+
+### **User Management**
+- **Admin:**
+  - Manage multiple user accounts.
+  - Block or unblock users.
+  - Change user passwords.
+
 
 ## Requirements
 
