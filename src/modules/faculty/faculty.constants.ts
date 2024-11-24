@@ -1,4 +1,4 @@
-import { TBloodGroup } from './student.interface';
+import { TBloodGroup } from './faculty.interface';
 
 export const BloodGroup: TBloodGroup[] = [
   'A+',
@@ -10,7 +10,7 @@ export const BloodGroup: TBloodGroup[] = [
   'O+',
   'O-',
 ];
-export const studentSearchableField = [
+export const facultySearchableField = [
   'email',
   'name.firstName',
   'presentAddress',

@@ -148,13 +148,13 @@ export const studentSchema = new Schema<TStudent, Student>(
   { timestamps: true, toJSON: { virtuals: true } },
 );
 studentSchema.virtual('fullName').get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`.trim();
+  return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`.trim();
 });
 // pre hooks for hashing passwords
 
 // post hooks for return passwords to the  user as empty
 
-studentSchema.pre('findOne', function (next) {
+studentSchema.pre('findOne', async function (next) {
   this.findOne({ isDeleted: { $ne: true } });
 
   next();
