@@ -110,16 +110,31 @@ const updateCourseFromDB = async (id: string, payload: Partial<TCourse>) => {
 
 const assignFacultiesToCourse = async (
   id: string,
-  faculties: Partial<TCourseFaculty>,
+  payload: Partial<TCourseFaculty>,
 ) => {
   const result = CourseFacultyModel.findByIdAndUpdate(
-    { course: id },
-    { $addToSet: { faculties: { $each: faculties } } },
+    id,
+
+    { course: id, $addToSet: { faculties: { $each: payload } } },
     { upsert: true, new: true, runValidators: true },
   );
+
   return result;
 };
+const removeFacultiesFromCourse = async (
+  id: string,
+  payload: Partial<TCourseFaculty>,
+) => {
+  const result = await CourseFacultyModel.findByIdAndUpdate(
+    id,
+    {
+      $pull: { faculties: { $in: payload } },
+    },
+    { new: true },
+  );
 
+  return result;
+};
 const courseServices = {
   createCourseIntoDB,
   getCoursesFromDB,
@@ -127,5 +142,6 @@ const courseServices = {
   updateCourseFromDB,
   deleteCourseFromDB,
   assignFacultiesToCourse,
+  removeFacultiesFromCourse,
 };
 export default courseServices;
