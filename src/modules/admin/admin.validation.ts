@@ -3,7 +3,7 @@ import { BloodGroup, Gender } from './admin.constants';
 
 const createUserNameValidationSchema = z.object({
   firstName: z.string().min(1).max(20),
-  middleName: z.string().max(20),
+  middleName: z.string().max(20).optional(),
   lastName: z.string().max(20),
 });
 

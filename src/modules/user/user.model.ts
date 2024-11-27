@@ -1,10 +1,10 @@
 import { model, Schema } from 'mongoose';
-import { TUser } from './user.interface';
+import { TUser, User } from './user.interface';
 
 import bcrypt from 'bcrypt';
 import config from '../../app/config';
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, User>(
   {
     id: {
       type: String,
@@ -14,11 +14,15 @@ const userSchema = new Schema<TUser>(
     password: {
       type: String,
       required: true,
+      select: 0,
     },
     needPasswordChange: {
       type: Boolean,
 
       default: true,
+    },
+    passwordChangedAt: {
+      type: Date,
     },
     role: {
       type: String,
@@ -47,15 +51,44 @@ userSchema.pre('save', async function (next) {
   );
   next();
 });
-userSchema.pre('findOne', async function (next) {
-  await this.findOne({ isDeleted: { $ne: true } });
-  next();
-});
+
 userSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
 
-const UserModel = model<TUser>('User', userSchema);
+userSchema.statics.isUserExistsByCustomId = async function (id: string) {
+  return await UserModel.findOne({ id }).select('+password');
+};
+userSchema.statics.isUserDeletedByCustomId = function (user: TUser) {
+  const isDeleted = user?.isDeleted;
+  return isDeleted;
+};
+userSchema.statics.isUserBlockedByCustomId = function (user: TUser) {
+  const status = user?.status;
+  if (status === 'blocked') {
+    return true;
+  }
+  return false;
+};
+
+userSchema.statics.isPasswordCorrect = async function (
+  plainTextPassword: string,
+  hashedPassword: string,
+) {
+  const checkPassword = await bcrypt.compare(plainTextPassword, hashedPassword);
+  return checkPassword;
+};
+userSchema.statics.isJWTIssuedBeforePasswordChange = function (
+  passwordChangedTimestamp: Date,
+  jwtIssuedTimestamp: number,
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimestamp).getTime() / 1000;
+
+  return passwordChangedTime > jwtIssuedTimestamp;
+};
+
+const UserModel = model<TUser, User>('User', userSchema);
 
 export default UserModel;

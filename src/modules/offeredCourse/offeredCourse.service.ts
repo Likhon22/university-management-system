@@ -98,6 +98,48 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   return newOfferedCourse;
 };
 
+const getAllOfferedCoursesFromDB = async () => {
+  const offeredCourses =
+    await OfferedCourseModel.find().populate('course faculty');
+  return offeredCourses;
+};
+
+const getSingleOfferedCourseFromDB = async (id: string) => {
+  const offeredCourse =
+    await OfferedCourseModel.findById(id).populate('course faculty');
+  return offeredCourse;
+};
+
+const deleteOfferedCourseFromDB = async (id: string) => {
+  /**
+   * Step 1: check if the offered course exists
+   * Step 2: check if the semester registration status is upcoming
+   * Step 3: delete the offered course
+   */
+  const isOfferedCourseExists = await OfferedCourseModel.findById(id);
+
+  if (!isOfferedCourseExists) {
+    throw new AppError(404, 'Offered Course not found');
+  }
+
+  const semesterRegistration = isOfferedCourseExists.semesterRegistration;
+
+  const semesterRegistrationStatus = await semesterRegistrationModel
+    .findById(semesterRegistration)
+    .select('status');
+
+  if (semesterRegistrationStatus?.status !== 'UPCOMING') {
+    throw new AppError(
+      400,
+      `Offered course can not update ! because the semester ${semesterRegistrationStatus}`,
+    );
+  }
+
+  const result = await OfferedCourseModel.findByIdAndDelete(id);
+
+  return result;
+};
+
 const updateOfferedCourseIntoDB = async (
   id: string,
   payload: Pick<TOfferedCourse, 'faculty' | 'days' | 'startTime' | 'endTime'>,
@@ -153,6 +195,9 @@ const updateOfferedCourseIntoDB = async (
 const offeredCourseServices = {
   createOfferedCourseIntoDB,
   updateOfferedCourseIntoDB,
+  getAllOfferedCoursesFromDB,
+  getSingleOfferedCourseFromDB,
+  deleteOfferedCourseFromDB,
 };
 
 export default offeredCourseServices;
