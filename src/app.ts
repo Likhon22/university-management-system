@@ -4,12 +4,17 @@ import cors from 'cors';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
 import routes from './app/route';
+import cookieParser from 'cookie-parser';
 
 export const app: Application = express();
-
+app.use(cookieParser());
 // parsers
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ['http://localhost:5173'],
+  }),
+);
 
 // application routes
 app.use('/api/v1', routes);

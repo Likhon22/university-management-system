@@ -6,6 +6,7 @@ import catchAsync from '../../app/utils/catchAsync';
 
 const getFaculties = catchAsync(async (req: Request, res: Response) => {
   const faculties = await facultyServices.getFacultyFromDB(req?.query);
+
   sendResponse(res, {
     statusCode: 200,
     success: true,

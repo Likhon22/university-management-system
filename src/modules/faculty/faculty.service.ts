@@ -8,6 +8,8 @@ import UserModel from '../user/user.model';
 import TFaculty from './faculty.interface';
 
 const getFacultyFromDB = async (query: Record<string, unknown>) => {
+
+  
   const faculty = new QueryBuilder(FacultyModel.find(), query)
     .search(facultySearchableField)
     .paginate()
