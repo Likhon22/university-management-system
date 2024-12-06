@@ -11,7 +11,7 @@ export const sendEmail = async (resetLink: string, toEmail: string) => {
       secure: config.node_env === 'production',
       auth: {
         user: 'likhonsarker793@gmail.com',
-        pass: 'vskp gjys nmwb mfen',
+        pass: `${config.smtp_email_pass}`,
       },
     });
 
