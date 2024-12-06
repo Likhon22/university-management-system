@@ -24,7 +24,8 @@
     "express": "^4.21.1",
     "http-status": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.8.0",
+    "mongoose": "^8.8.4",
+    "nodemailer": "^6.9.16",
     "ph-university-recap": "file:",
     "zod": "^3.23.8"
   },
@@ -36,6 +37,7 @@
     "@types/express": "^5.0.0",
     "@types/http-status": "^1.1.2",
     "@types/node": "^22.8.7",
+    "@types/nodemailer": "^6.4.17",
     "@typescript-eslint/eslint-plugin": "^8.12.2",
     "@typescript-eslint/parser": "^8.12.2",
     "eslint": "^9.14.0",

@@ -5,6 +5,7 @@ import UserModel from '../user/user.model';
 import { TLoginUser } from './auth.interface';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { createToken } from './auth.utils';
+import { sendEmail } from '../../app/utils/sendMail';
 
 const loginUser = async (payload: TLoginUser) => {
   //   checking if the user is exists
@@ -153,10 +154,89 @@ const refreshToken = async (token: string) => {
   };
 };
 
+const forgetPassword = async (userId: string) => {
+  const user = await UserModel.isUserExistsByCustomId(userId);
+
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+
+  if (UserModel.isUserDeletedByCustomId(user)) {
+    throw new AppError(404, 'User not found--delete');
+  }
+  // checking if the user is blocked
+
+  if (UserModel.isUserBlockedByCustomId(user)) {
+    throw new AppError(403, 'User is blocked');
+  }
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+  const resetToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    '10m',
+  );
+
+  const resetLink = `${config.reset_password_ui_link}?id=${user.id}&token=${resetToken}`;
+  sendEmail(resetLink, user.email);
+  console.log(resetLink);
+};
+
+const resetPassword = async (
+  payload: { newPassword: string; id: string },
+  token: string,
+) => {
+  const user = await UserModel.isUserExistsByCustomId(payload.id);
+
+  if (!user) {
+    throw new AppError(404, 'User not found');
+  }
+
+  if (UserModel.isUserDeletedByCustomId(user)) {
+    throw new AppError(404, 'User not found--delete');
+  }
+  // checking if the user is blocked
+
+  if (UserModel.isUserBlockedByCustomId(user)) {
+    throw new AppError(403, 'User is blocked');
+  }
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string,
+  ) as JwtPayload;
+  const { userId, role } = decoded;
+  if (userId !== payload.id) {
+    throw new AppError(403, 'forbidden');
+  }
+
+  const hashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_round),
+  );
+
+  await UserModel.findOneAndUpdate(
+    {
+      id: userId,
+      role,
+    },
+    {
+      $set: {
+        password: hashedPassword,
+        needPasswordChange: false,
+        passwordChangedAt: new Date(),
+      },
+    },
+  );
+};
+
 const authServices = {
   loginUser,
   changePassword,
   refreshToken,
+  forgetPassword,
+  resetPassword,
 };
 
 export default authServices;
