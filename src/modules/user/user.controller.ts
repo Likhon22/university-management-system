@@ -2,15 +2,17 @@ import { userServices } from './user.service';
 import sendResponse from '../../app/utils/sendResponse';
 
 import catchAsync from '../../app/utils/catchAsync';
+import AppError from '../../app/error/AppError';
 
 const createStudent = catchAsync(async (req, res) => {
   const { password, student } = req.body;
 
-  // const zodParsedData = studentValidationSchema.parse(student);
   const studentData = await userServices.createStudentsIntoDB(
+    req?.file,
     password,
     student,
   );
+
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -42,8 +44,34 @@ const createAdmin = catchAsync(async (req, res) => {
     message: 'Admin created successfully',
   });
 });
+const getMe = catchAsync(async (req, res) => {
+  const { userId, role } = req.user;
+  if (!userId) {
+    throw new AppError(400, 'Invalid token');
+  }
+  const result = await userServices.getMeFromDB(userId, role);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    data: result,
+    message: 'User fetched successfully',
+  });
+});
+
+const changeStatus = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const result = await userServices.changeStatusFromDB(id, req.body.status);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    data: result,
+    message: 'Status changed successfully',
+  });
+});
 export const userController = {
   createStudent,
   createFaculty,
   createAdmin,
+  getMe,
+  changeStatus,
 };

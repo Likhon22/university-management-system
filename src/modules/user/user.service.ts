@@ -17,8 +17,10 @@ import TFaculty from '../faculty/faculty.interface';
 import FacultyModel from '../faculty/faculty.model';
 import { TAdmin } from '../admin/admin.interface';
 import { AdminModel } from '../admin/admin.model';
+import { sendImageToCloudinary } from '../../app/utils/sendImageToCloudinary';
 
 const createStudentsIntoDB = async (
+  file: any,
   password: string,
   studentData: TStudent,
 ) => {
@@ -52,9 +54,15 @@ const createStudentsIntoDB = async (
       throw new AppError(500, 'User creation failed');
     }
 
+    // sent image to cloudinary to get link
+
     studentData.id = newUser[0].id;
 
     studentData.user = newUser[0]._id;
+    const imageName = `${newUser[0].id} - ${studentData.name.firstName} ${studentData.name.lastName}}`;
+    const path = file?.path;
+    const { secure_url } = await sendImageToCloudinary(imageName, path);
+    studentData.profileImg = secure_url;
 
     const newStudent = await StudentModel.create([studentData], { session });
     if (!newStudent.length) {
@@ -136,8 +144,38 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
   }
 };
 
+const getMeFromDB = async (userId: string, role: string) => {
+  let result = null;
+  if (role === 'admin') {
+    result = await AdminModel.findOne({ id: userId });
+  }
+  if (role === 'faculty') {
+    result = await FacultyModel.findOne({ id: userId });
+  }
+  if (role === 'student') {
+    result = await StudentModel.findOne({ id: userId, role });
+  }
+  return result;
+};
+
+const changeStatusFromDB = async (id: string, payload: string) => {
+  const changedStatus = await UserModel.findByIdAndUpdate(
+    id,
+    { status: payload },
+    { new: true },
+  );
+
+  if (!changedStatus) {
+    throw new AppError(400, 'User not found');
+  }
+
+  return changedStatus;
+};
+
 export const userServices = {
   createStudentsIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
+  getMeFromDB,
+  changeStatusFromDB,
 };

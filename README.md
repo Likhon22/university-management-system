@@ -5,6 +5,7 @@ This project is a University Management System designed to streamline and simpli
 ## Features
 
 ### **Authentication**
+
 - **Student:**
   - Secure login and logout functionality.
   - Ability to update their password.
@@ -16,6 +17,7 @@ This project is a University Management System designed to streamline and simpli
   - Ability to update their password.
 
 ### **Profile Management**
+
 - **Student:**
   - Manage and update profile details, including certain specific fields.
 - **Faculty:**
@@ -24,6 +26,7 @@ This project is a University Management System designed to streamline and simpli
   - Manage and update profile details, including certain specific fields.
 
 ### **Academic Process**
+
 - **Student:**
   - Enroll in offered courses for a specific semester.
   - View class schedules and grades.
@@ -35,11 +38,11 @@ This project is a University Management System designed to streamline and simpli
   - Manage semesters, courses, offered courses, sections, rooms, and buildings.
 
 ### **User Management**
+
 - **Admin:**
   - Manage multiple user accounts.
   - Block or unblock users.
   - Change user passwords.
-
 
 ## Requirements
 

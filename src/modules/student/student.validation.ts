@@ -29,7 +29,6 @@ const createStudentValidationSchema = z.object({
     student: z.object({
       name: createNameValidationSchema,
       email: z.string().email(),
-      profileImg: z.string().url(),
       gender: z.enum(['male', 'female', 'other']),
       admissionSemester: z.string(),
       academicDepartment: z.string(),
