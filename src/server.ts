@@ -2,10 +2,12 @@ import mongoose from 'mongoose';
 import config from './app/config';
 import app from './app';
 import { Server } from 'http';
+import { seedSuperAdmin } from './app/DB';
 let server: Server;
 async function main() {
   try {
     await mongoose.connect(config.database_url as string);
+    seedSuperAdmin();
     server = app.listen(config.port, () => {
       console.log(`Example app listening on port ${config.port}`);
     });
@@ -16,8 +18,12 @@ async function main() {
 
 main();
 
-process.on('unhandledRejection', () => {
-  console.error('Unhandled Rejection at caught.Shutting down the server ....');
+process.on('unhandledRejection', (reason, err) => {
+  console.error(
+    'Unhandled Rejection at caught.Shutting down the server ....',
+    reason,
+    err,
+  );
   if (server) {
     server.close(() => {
       process.exit(1);

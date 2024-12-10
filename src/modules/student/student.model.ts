@@ -92,6 +92,7 @@ export const studentSchema = new Schema<TStudent, Student>(
     },
     profileImg: {
       type: String,
+      default: '',
     },
     gender: {
       type: String,

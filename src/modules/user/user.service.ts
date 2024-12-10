@@ -59,10 +59,12 @@ const createStudentsIntoDB = async (
     studentData.id = newUser[0].id;
 
     studentData.user = newUser[0]._id;
-    const imageName = `${newUser[0].id} - ${studentData.name.firstName} ${studentData.name.lastName}}`;
-    const path = file?.path;
-    const { secure_url } = await sendImageToCloudinary(imageName, path);
-    studentData.profileImg = secure_url;
+    if (file) {
+      const imageName = `${newUser[0].id} - ${studentData.name.firstName} ${studentData.name.lastName}}`;
+      const path = file?.path;
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+      studentData.profileImg = secure_url as string;
+    }
 
     const newStudent = await StudentModel.create([studentData], { session });
     if (!newStudent.length) {
