@@ -37,4 +37,10 @@ router.delete(
   courseControllers.removeFacultiesFromCourse,
 );
 
+router.get(
+  '/:id/faculties',
+  // auth(User_Role.admin, User_Role.faculty, User_Role.student),
+  courseControllers.getCourseFaculties,
+);
+
 export const courseRoutes = router;

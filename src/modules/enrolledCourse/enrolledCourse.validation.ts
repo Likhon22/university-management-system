@@ -12,10 +12,10 @@ const marksValidation = z.object({
     offeredCourse: z.string(),
     student: z.string(),
     courseMarks: z.object({
-      classTest1: z.number().optional(),
-      classTest2: z.number().optional(),
-      mid: z.number().optional(),
-      final: z.number().optional(),
+      classTest1: z.number().min(0).max(10).optional(),
+      classTest2: z.number().min(0).max(10).optional(),
+      mid: z.number().min(0).max(30).optional(),
+      final: z.number().min(0).max(50).optional(),
     }),
   }),
 });

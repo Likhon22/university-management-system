@@ -20,4 +20,10 @@ router.patch(
   enrolledCourseControllers.updateMarks,
 );
 
+router.get(
+  '/',
+  auth(User_Role.student),
+  enrolledCourseControllers.getMyEnrolledCourses,
+);
+
 export const enrolledCourseRoutes = router;

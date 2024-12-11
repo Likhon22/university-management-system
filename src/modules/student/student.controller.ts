@@ -7,7 +7,9 @@ const getStudents = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    data: students,
+    data: students.result,
+    meta: students.meta,
+
     message: 'Students fetched successfully',
   });
 });

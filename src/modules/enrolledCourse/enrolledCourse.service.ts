@@ -9,13 +9,12 @@ import EnrolledCourseModel from './enrolledCourse.model';
 import { CourseModel } from '../course/course.model';
 import FacultyModel from '../faculty/faculty.model';
 import { calculateGradesAndPoints } from './enrolledCourse.utils';
+import QueryBuilder from '../../app/builder/QueryBuilder';
 
 const createEnrolledCourseInDB = async (
   payload: TEnrolledCourse,
   userId: string,
 ) => {
-  console.log(payload.offeredCourse);
-
   const student = await StudentModel.findOne({ id: userId });
   if (!student) {
     throw new AppError(404, 'Student not found');
@@ -181,10 +180,10 @@ const updateMarksInDB = async (
   if (courseMarks?.final) {
     const { classTest1, classTest2, mid, final } = courseMarks;
     const totalMarks =
-      Math.ceil(classTest1 * 0.1) +
-      Math.ceil(classTest2 * 0.1) +
-      Math.ceil(mid * 0.3) +
-      Math.ceil(final * 0.5);
+      Math.ceil(classTest1) +
+      Math.ceil(classTest2) +
+      Math.ceil(mid) +
+      Math.ceil(final);
     const gradesAndPoints = calculateGradesAndPoints(totalMarks);
     modifiedData.grade = gradesAndPoints.grade;
     modifiedData.gradePoints = gradesAndPoints.gradePoints;
@@ -197,10 +196,26 @@ const updateMarksInDB = async (
   );
   return result;
 };
+const getMyEnrolledCourseFromDB = async (
+  studentId: string,
+  query: Record<string, unknown>,
+) => {
+  const enrolledCourse = new QueryBuilder(
+    EnrolledCourseModel.find({ student: studentId }),
+    query,
+  )
+    .sort()
+    .paginate()
+    .filter()
+    .fields();
+  const result = await enrolledCourse.modelQuery;
+  return result;
+};
 
 const enrolledCourseServices = {
   createEnrolledCourseInDB,
   updateMarksInDB,
+  getMyEnrolledCourseFromDB,
 };
 
 export default enrolledCourseServices;
