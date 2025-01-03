@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { TUserRole } from '../../modules/user/user.interface';
 import UserModel from '../../modules/user/user.model';
 import config from '../config';
@@ -12,10 +13,16 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(401, 'Unauthorized');
     }
     // check if the token is valid
-    const decoded = jwt.verify(
-      token,
-      config.jwt_access_secret as string,
-    ) as JwtPayload;
+    let decoded: JwtPayload;
+    try {
+      decoded = jwt.verify(
+        token,
+        config.jwt_access_secret as string,
+      ) as JwtPayload;
+    } catch (err) {
+      throw new AppError(401, 'Unauthorized');
+    }
+
     const { userId, role, iat } = decoded;
 
     if (requiredRoles && !requiredRoles.includes(role)) {

@@ -192,7 +192,7 @@ const updateOfferedCourseIntoDB = async (
   return result;
 };
 
-const getMyOfferedCoursesFromDB = async (
+const getMyOfferedCoursesFromDB = async ( 
   userId: string,
   query: Record<string, unknown>,
 ) => {
