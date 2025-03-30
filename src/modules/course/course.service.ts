@@ -5,6 +5,7 @@ import { courseSearchableFields } from './course.constants';
 import { TCourse, TCourseFaculty } from './course.interface';
 import { CourseFacultyModel, CourseModel } from './course.model';
 import AppError from '../../app/error/AppError';
+import client from '../../app/DB/client';
 
 const createCourseIntoDB = async (payload: TCourse) => {
   const result = await CourseModel.create(payload);
@@ -12,6 +13,11 @@ const createCourseIntoDB = async (payload: TCourse) => {
 };
 
 const getCoursesFromDB = async (query: Record<string, unknown>) => {
+  const cacheValue = await client.get('courses');
+  if (cacheValue) {
+    const courses = JSON.parse(cacheValue);
+    return courses;
+  }
   const courseQuery = new QueryBuilder(
     CourseModel.find().populate('preRequisiteCourses.course'),
     query,
@@ -22,6 +28,8 @@ const getCoursesFromDB = async (query: Record<string, unknown>) => {
     .paginate()
     .fields();
   const courses = await courseQuery.modelQuery;
+  await client.set('courses', JSON.stringify(courses));
+  await client.expire('courses', 60 * 60); // Set cache expiration to 1 hour
   return courses;
 };
 const getSingleCourseFromDB = async (id: string) => {

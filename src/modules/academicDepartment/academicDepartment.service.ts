@@ -1,3 +1,4 @@
+import QueryBuilder from '../../app/builder/QueryBuilder';
 import TAcademicDepartment from './academicDepartment.interface';
 import AcademicDepartmentModel from './academicDepartment.model';
 
@@ -6,10 +7,17 @@ const createAcademicDepartmentIntoDB = async (payload: TAcademicDepartment) => {
   return newAcademicDepartment;
 };
 
-const getAcademicDepartmentsFromDB = async () => {
-  const academicDepartments =
-    await AcademicDepartmentModel.find().populate('academicFaculty');
-  return academicDepartments;
+const getAcademicDepartmentsFromDB = async (query: Record<string, unknown>) => {
+  const academicDepartments = new QueryBuilder(
+    AcademicDepartmentModel.find().populate('academicFaculty'),
+    query,
+  )
+    .filter()
+    .sort()
+    .paginate();
+  const result = await academicDepartments.modelQuery;
+  const meta = await academicDepartments.countTotal();
+  return { result, meta };
 };
 
 const getSingleAcademicDepartmentFromDB = async (id: string) => {

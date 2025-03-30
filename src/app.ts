@@ -12,7 +12,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5175'],
     credentials: true,
   }),
 );
@@ -23,7 +23,7 @@ const test = (req: Request, res: Response) => {
   res.send('Hello World!');
   // Promise.reject();
 };
-app.get('/', test);
+   app.get('/', test);
 
 // error handler
 app.use(globalErrorHandler);

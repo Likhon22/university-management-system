@@ -15,7 +15,7 @@ router.post(
 );
 router.get(
   '/',
-  auth(User_Role.admin, User_Role.faculty, User_Role.student),
+  // auth(User_Role.admin, User_Role.faculty, User_Role.student),
   courseControllers.getCourses,
 );
 router.get('/:id', courseControllers.getSingleCourse);
