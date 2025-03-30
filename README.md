@@ -37,6 +37,13 @@ This project is a University Management System designed to streamline and simpli
 - **Admin:**
   - Manage semesters, courses, offered courses, sections, rooms, and buildings.
 
+### **Performance Optimization**
+
+- **Redis Caching:**
+  - Efficient course data caching to improve response times
+  - Reduced database load for frequently accessed data
+  - Automatic cache expiration to ensure data freshness
+
 ### **User Management**
 
 - **Admin:**
@@ -49,6 +56,7 @@ This project is a University Management System designed to streamline and simpli
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
 - [TypeScript](https://www.typescriptlang.org/) (v5 or higher)
 - MongoDB (local or cloud-based like [MongoDB Atlas](https://www.mongodb.com/atlas))
+- Redis (for data caching and performance optimization)
 
 ## Installation and Setup
 
@@ -72,6 +80,7 @@ This project is a University Management System designed to streamline and simpli
    ```env
    MONGO_URI=<your-mongodb-uri>
    PORT=<server-port>
+   REDIS_URL=<your-redis-uri> # Optional: ioredis will use default connection if not specified
    ```
 
 4. **Build the project:**
@@ -165,6 +174,7 @@ university-management-system/
   - `dotenv`: Load environment variables
   - `express`: Web framework
   - `http-status`: Standardized HTTP status codes
+  - `ioredis`: Redis client for high-performance caching
   - `mongoose`: MongoDB object modeling
   - `zod`: Schema validation
 
